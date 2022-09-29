@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Head from 'next/head'
+import getConfig from 'next/config';
 import { Container, Row, Modal } from 'react-bootstrap'
 
 import { parseLotteryData, checkForWinnerTicket } from 'src/helpers'
@@ -37,8 +38,12 @@ function ResultsModal(props) {
 }
 
 export async function getStaticProps() {
-  const fs = require('fs');
-  const lotteryData = JSON.parse(fs.readFileSync('src/data/resultados.json', { encoding: 'utf8', flag: 'r' }));
+  const { publicRuntimeConfig } = getConfig();
+  const res = await fetch(`${publicRuntimeConfig.apiUrl}/staticdata`);
+  // console.log(res)
+  const data = await res.json()
+
+  const lotteryData = JSON.parse(data);
 
   return {
     props: {
