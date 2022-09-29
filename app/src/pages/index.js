@@ -37,7 +37,7 @@ function ResultsModal(props) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const { publicRuntimeConfig } = getConfig();
   const res = await fetch(`${publicRuntimeConfig.apiUrl}/staticdata`);
   // console.log(res)
