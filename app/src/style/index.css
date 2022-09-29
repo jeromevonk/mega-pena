@@ -1,0 +1,62 @@
+/* ensure all pages have Bootstrap CSS */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+.md-container {
+  max-width: 600px;
+  padding-top: 2rem;
+}
+
+.cntr-footer {
+  height: 80px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top: 1px solid #ccc;
+}
+
+.footer {
+  margin-top: 5;
+}
+
+.title {
+  height: 80px;
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #209869;
+  color: white;
+  font-weight: bold;
+}
+
+.modal-title {
+  display: flex;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.game {
+  background-color: #f7f9d7;
+  color: red
+}
+
+.verify {
+  height: 80px;
+  width: 100;
+  padding: 5;
+}
+
+.untoggled-button {
+  /* background-image: green !important; */
+  background-color: transparent;
+  color: red;
+  width: 4;
+}
+
+.untoggled-button-active {
+  background-color: blue;
+  color: rgb(156, 10, 10);
+  font-weight: bold;
+  width: 4;
+}
