@@ -38,7 +38,7 @@ function ResultsModal(props) {
 
 export async function getStaticProps() {
   const fs = require('fs');
-  const lotteryData = JSON.parse(fs.readFileSync('data/resultados.json', { encoding: 'utf8', flag: 'r' }));
+  const lotteryData = JSON.parse(fs.readFileSync('src/data/resultados.json', { encoding: 'utf8', flag: 'r' }));
 
   return {
     props: {
