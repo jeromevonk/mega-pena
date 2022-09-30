@@ -38,7 +38,22 @@
 
 .game {
   background-color: #f7f9d7;
-  color: red
+  color: red;
+}
+
+.info {
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #209869;
+  color: white;
+}
+
+.actions {
+  margin-top: 5px;
+  display: flex;
+  justify-content: center;
 }
 
 .verify {

@@ -2,16 +2,16 @@ import * as React from 'react';
 import Head from 'next/head'
 import getConfig from 'next/config';
 import { Container, Row, Modal } from 'react-bootstrap'
-import { parseLotteryData, checkForWinnerTicket } from 'src/helpers'
+import { checkForWinnerTicket } from 'src/helpers'
 
 export async function getServerSideProps() {
   const { publicRuntimeConfig } = getConfig();
-  const res = await fetch(`${publicRuntimeConfig.apiUrl}/staticdata`);
-  const data = await res.json();
+  const res = await fetch(`${publicRuntimeConfig.apiUrl}/lottery-data`);
+  const lotteryData = await res.json();
 
   return {
     props: {
-      lotteryData: parseLotteryData(data)
+      lotteryData
     },
   }
 }
@@ -81,6 +81,8 @@ export default function Index(props) {
     return buttons;
   }
 
+  const numContests = props.lotteryData.length;
+
   return (
     <Container className="md-container">
       <Head>
@@ -97,33 +99,38 @@ export default function Index(props) {
               getButtonGrid()
             }
           </Container>
-          <div >
-            <button
-              type="button"
-              disabled={checked.length !== 6}
-              onClick={() => setModalShow(true)}
-            >
-              Verificar
-            </button>
-            <button
-              type="button"
-              disabled={checked.length === 0}
-              onClick={() => setChecked([])}
-            >
-              Limpar
-            </button>
+          <Container className='info'>
+            {numContests} concursos | último em {props.lotteryData[0].date}
+          </Container>
+          <Container className='actions'>
+            <Row>
+              <button
+                type="button"
+                disabled={checked.length !== 6}
+                onClick={() => setModalShow(true)}
+              >
+                Verificar
+              </button>
+              <button
+                type="button"
+                disabled={checked.length === 0}
+                onClick={() => setChecked([])}
+              >
+                Limpar
+              </button>
+            </Row>
             <ResultsModal
               show={modalShow}
               onHide={() => setModalShow(false)}
               checked={checked}
               lotteryData={props.lotteryData}
             />
+          </Container>
 
-          </div>
         </Container>
       </main>
       <footer className="cntr-footer">
-        By Jerome Vonk - {`${props.lotteryData.length} concursos carregados`}
+        By Jerome Vonk
       </footer>
     </Container>
   )
