@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
   // Read the json data file data.json
   const fileContents = await fs.readFile(jsonDirectory + '/resultados.json', 'utf8');
-  
+
   // Return the content of the data file in json format
-  res.status(200).json(fileContents);
+  res.status(200).json(JSON.parse(fileContents));
 }

@@ -2,58 +2,22 @@ import * as React from 'react';
 import Head from 'next/head'
 import getConfig from 'next/config';
 import { Container, Row, Modal } from 'react-bootstrap'
-
 import { parseLotteryData, checkForWinnerTicket } from 'src/helpers'
-
-
-function ResultsModal(props) {
-  const { checked, lotteryData, ...otherProps } = props;
-
-  return (
-    <Modal
-      {...otherProps}
-      size="lg"
-      centered
-    >
-      <Modal.Header closeButton>
-        <Modal.Title className='modal-title'>
-          Resultados
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div>
-          {checkForWinnerTicket(checked, lotteryData).map(item => (
-            <p key={item.contestNumber}>
-              {item.firstLine} <br />
-              {item.secondLine}
-            </p>
-          ))}
-        </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <button onClick={props.onHide}>Close</button>
-      </Modal.Footer>
-    </Modal>
-  );
-}
 
 export async function getServerSideProps() {
   const { publicRuntimeConfig } = getConfig();
   const res = await fetch(`${publicRuntimeConfig.apiUrl}/staticdata`);
-  // console.log(res)
-  const data = await res.json()
-
-  const lotteryData = JSON.parse(data);
+  const data = await res.json();
 
   return {
     props: {
-      lotteryData: parseLotteryData(lotteryData)
+      lotteryData: parseLotteryData(data)
     },
   }
 }
 
 export default function Index(props) {
-  const [checked, setChecked] = React.useState([1, 10, 27, 36, 37, 45]);
+  const [checked, setChecked] = React.useState([]);
   const [modalShow, setModalShow] = React.useState(false);
 
   const handleToggle = (index) => {
@@ -68,7 +32,6 @@ export default function Index(props) {
 
         return [...prev];
       })
-
     } else {
       if (checked.length > 5) {
         // It's full. Return?
@@ -142,6 +105,13 @@ export default function Index(props) {
             >
               Verificar
             </button>
+            <button
+              type="button"
+              disabled={checked.length === 0}
+              onClick={() => setChecked([])}
+            >
+              Limpar
+            </button>
             <ResultsModal
               show={modalShow}
               onHide={() => setModalShow(false)}
@@ -157,4 +127,37 @@ export default function Index(props) {
       </footer>
     </Container>
   )
+}
+
+function ResultsModal(props) {
+  const { checked, lotteryData, ...otherProps } = props;
+
+  return (
+    <Modal
+      {...otherProps}
+      size="lg"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title className='modal-title'>
+          Resultados
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <h4>{checked.sort().map(item => `${item} `)}</h4>
+        {/* TODO numeros selecionados */}
+        <div>
+          {checkForWinnerTicket(checked, lotteryData).map(item => (
+            <p key={item.contestNumber}>
+              {item.firstLine} <br />
+              {item.secondLine}
+            </p>
+          ))}
+        </div>
+      </Modal.Body>
+      <Modal.Footer>
+        <button onClick={props.onHide}>Close</button>
+      </Modal.Footer>
+    </Modal>
+  );
 }

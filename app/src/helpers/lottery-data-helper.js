@@ -14,7 +14,7 @@ function parseLotteryData(lotteryData) {
       drawnNumbers: item.dezenas.map(num => Number(num)),
       prizeForNextContest: item.acumuladaProxConcurso,
       awards: {
-        sena : {
+        sena: {
           winners: item.premiacoes[0].vencedores,
           prize: item.premiacoes[0].premio,
         },
@@ -40,44 +40,49 @@ function checkForWinnerTicket(selectedNumbers, lotteryData) {
   let results = [];
 
   for (const contest of lotteryData) {
-    let hits = 0;
+    const hits = []; // todo preencher isso em vez do hist
 
     for (const i of selectedNumbers) {
       if (contest.drawnNumbers.includes(i)) {
-        hits++;
+        hits.push(i);
       }
     }
 
-    if (hits == 4) {
-      results.push(getPrizeText('quadra', contest));
-    } else if (hits === 5) {
-      results.push(getPrizeText('quina', contest));
-    } else if (hits === 6) {
-      results.push(getPrizeText('sena', contest));
+    if (hits.length == 4) {
+      results.push(getPrizeText('quadra', hits, contest));
+    } else if (hits.length === 5) {
+      results.push(getPrizeText('quina', hits, contest));
+    } else if (hits.length === 6) {
+      results.push(getPrizeText('sena', hits, contest));
     }
   }
 
   return results;
 }
 
-const getPrizeText = (prize, contest) => {
-  const firstLine = <span>No concurso <i>{contest.contestNumber}</i>, em {contest.date}, você acertaria a <b>{prize}</b></span>;
+const getPrizeText = (prize, hits, contest) => {
+  // First line - which contest, date and how many hits
+  const firstLine = <span>No concurso <i>{contest.contestNumber}</i>,
+    em {contest.date}, você acertaria a <b>{prize}</b>{prize !== 'sena' && ` com ${hits}`}.</span>;
+
+
+  // Second line - winners and prize
   let secondLine;
 
   if (contest.awards[prize].winners > 1) {
-     secondLine= <span>Na ocasião, {customlocaleString(contest.awards[prize].winners)} pessoas acertaram e cada uma levou <b>R$ {contest.awards[prize].prize}</b>.</span>
+    secondLine = <span>Na ocasião, {customlocaleString(contest.awards[prize].winners)} pessoas acertaram e cada uma levou <b>R$ {contest.awards[prize].prize}</b>.</span>
   } else if (contest.awards[prize].winners === 1) {
     secondLine = <span>Na ocasião, {customlocaleString(contest.awards[prize].winners)} pessoa acertou e levou <b>R$ {contest.awards[prize].prize}</b>.</span>
   } else {
-    const fragment = `Na ocasião, ninguém acertou.`;
+    const noWinnerfragment = `Na ocasião, ninguém acertou.`;
     if (contest.prizeForNextContest) {
-      secondLine = <span>{fragment} Aproximadamente <b>{contest.prizeForNextContest}</b> foram acumulados para o próximo concurso.</span>
+      secondLine = <span>{noWinnerfragment}<br />Aproximadamente <b>{contest.prizeForNextContest}</b> foram acumulados para o próximo concurso.</span>
     } else {
-      secondLine = <span>{fragment}</span>
+      secondLine = <span>{noWinnerfragment}</span>
     }
   }
 
-  return { contestNumber: contest.contestNumber, firstLine, secondLine};
+  return { contestNumber: contest.contestNumber, firstLine, secondLine };
 }
 
 // TODO: testes unitários nesse arquivo
