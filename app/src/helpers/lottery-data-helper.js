@@ -40,7 +40,7 @@ function checkForWinnerTicket(selectedNumbers, lotteryData) {
   let results = [];
 
   for (const contest of lotteryData) {
-    const hits = []; // todo preencher isso em vez do hist
+    const hits = [];
 
     for (const i of selectedNumbers) {
       if (contest.drawnNumbers.includes(i)) {

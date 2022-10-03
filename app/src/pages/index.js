@@ -50,7 +50,7 @@ export default function Index(props) {
   // -------------------------------------------------
   const getRowOfButtons = (indexList) => {
     return (
-      <Row className="justify-content-md-between" key={`row-${indexList[0]}`}>
+      <Row key={`row-${indexList[0]}`}>
         {
           indexList.map(index => (
             <button
@@ -105,19 +105,22 @@ export default function Index(props) {
           <Container className='actions'>
             <Row>
               <button
-                type="button"
-                disabled={checked.length !== 6}
-                onClick={() => setModalShow(true)}
-              >
-                Verificar
-              </button>
-              <button
+                className='clear'
                 type="button"
                 disabled={checked.length === 0}
                 onClick={() => setChecked([])}
               >
                 Limpar
               </button>
+              <button
+                className='verify'
+                type="button"
+                disabled={checked.length !== 6}
+                onClick={() => setModalShow(true)}
+              >
+                Verificar
+              </button>
+
             </Row>
             <ResultsModal
               show={modalShow}
@@ -139,6 +142,8 @@ export default function Index(props) {
 function ResultsModal(props) {
   const { checked, lotteryData, ...otherProps } = props;
 
+  const results = checkForWinnerTicket(checked, lotteryData);
+
   return (
     <Modal
       {...otherProps}
@@ -152,19 +157,28 @@ function ResultsModal(props) {
       </Modal.Header>
       <Modal.Body>
         <h4>{checked.sort().map(item => `${item} `)}</h4>
-        {/* TODO numeros selecionados */}
         <div>
-          {checkForWinnerTicket(checked, lotteryData).map(item => (
-            <p key={item.contestNumber}>
-              {item.firstLine} <br />
-              {item.secondLine}
-            </p>
-          ))}
+          {
+            results.length > 0 ?
+
+              // Show results
+              results.map(item => (
+                <p key={item.contestNumber}>
+                  {item.firstLine} <br />
+                  {item.secondLine}
+                </p>
+              ))
+
+              :
+
+              // No results! Show a message
+              <p> A combinação nunca foi premiada!</p>
+          }
         </div>
       </Modal.Body>
       <Modal.Footer>
         <button onClick={props.onHide}>Close</button>
       </Modal.Footer>
-    </Modal>
+    </Modal >
   );
 }

@@ -52,26 +52,39 @@
 
 .actions {
   margin-top: 5px;
-  display: flex;
-  justify-content: center;
+  /* display: flex;
+  justify-content: center; */
 }
 
 .verify {
-  height: 80px;
-  width: 100;
-  padding: 5;
+  width: 100%;
+  border: none;
+  background-color: #209869;
+  color: white;
+}
+
+.clear {
+  width: 100%;
+  background-color: transparent;
+  border: none;
 }
 
 .untoggled-button {
   /* background-image: green !important; */
   background-color: transparent;
   color: red;
-  width: 4;
+  /* border: none; */
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  width: 10%;
 }
 
 .untoggled-button-active {
-  background-color: blue;
+  background-color: rgb(124, 124, 233);
   color: rgb(156, 10, 10);
   font-weight: bold;
-  width: 4;
+  width: 10%;
+  /* border: none; */
 }
