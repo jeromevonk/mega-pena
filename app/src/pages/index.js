@@ -56,7 +56,7 @@ export default function Index(props) {
             <button
               type="button"
               key={index}
-              className={checked.includes(index) ? 'untoggled-button-active' : 'untoggled-button'}
+              className={checked.includes(index) ? 'custom-button checked-button' : 'custom-button unchecked-button'}
               onClick={() => handleToggle(index)}
             >
               {index}
@@ -99,10 +99,14 @@ export default function Index(props) {
               getButtonGrid()
             }
           </Container>
+          <Container className='description'>
+            Selecione 6 dezenas e verifique se a combinação já saiu <br />
+            em qualquer um dos concursos anteriores
+          </Container>
           <Container className='info'>
             {numContests} concursos | último em {props.lotteryData[0].date}
           </Container>
-          <Container className='actions'>
+          <Container>
             <Row>
               <button
                 className='clear'
@@ -118,7 +122,7 @@ export default function Index(props) {
                 disabled={checked.length !== 6}
                 onClick={() => setModalShow(true)}
               >
-                Verificar
+                {checked.length === 6 ? 'Verificar' : 'Escolha 6 dezenas'}
               </button>
 
             </Row>
@@ -133,7 +137,7 @@ export default function Index(props) {
         </Container>
       </main>
       <footer className="cntr-footer">
-        By Jerome Vonk
+        <a href="https://jeromevonk.github.io/" target="blank">By Jerome Vonk</a>
       </footer>
     </Container>
   )
@@ -156,7 +160,7 @@ function ResultsModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4>{checked.sort().map(item => `${item} `)}</h4>
+        <h4 className='selected-numbers'>{checked.sort().map(item => `${item} `)}</h4>
         <div>
           {
             results.length > 0 ?
