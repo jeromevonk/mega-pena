@@ -72,8 +72,7 @@
   font-weight: bold;
 }
 
-.verify:disabled,
-verify[disabled] {
+.verify:disabled{
   font-style: italic;
 }
 
