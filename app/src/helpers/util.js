@@ -15,12 +15,13 @@ function customlocaleString(value) {
 
 
 function generateRandomIntegerList(num) {
-  const integers = [];
-  while (integers.length < num) {
+  const integerList = [];
+  while (integerList.length < num) {
     let randomInt = generateRandomIntegerInRange(1, 60);
-    if (!integers.includes(randomInt)) integers.push(randomInt)
+    if (!integerList.includes(randomInt)) integerList.push(randomInt)
   }
-  return integers.sort();
+
+  return integerList;
 }
 
 function generateRandomIntegerInRange(min, max) {

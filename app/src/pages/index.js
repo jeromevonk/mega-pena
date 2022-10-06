@@ -168,7 +168,7 @@ function ResultsModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4 className='selected-numbers'>{checked.sort().map(item => `${item} `)}</h4>
+        <h4 className='selected-numbers'>{checked.sort((a, b) => a - b).map(item => `${item} `)}</h4>
         <div>
           {
             results.length > 0 ?
