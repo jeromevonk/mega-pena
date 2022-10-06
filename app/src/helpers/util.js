@@ -17,13 +17,16 @@ function customlocaleString(value) {
 function generateRandomIntegerList(num) {
   const integerList = [];
   while (integerList.length < num) {
-    let randomInt = generateRandomIntegerInRange(1, 60);
+    let randomInt = generateRandomIntegerInRange(60);
     if (!integerList.includes(randomInt)) integerList.push(randomInt)
   }
 
   return integerList;
 }
 
-function generateRandomIntegerInRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function generateRandomIntegerInRange(max) {
+  let integerList = new Uint32Array(1);
+  self.crypto.getRandomValues(integerList);
+
+  return (integerList[0] % max) + 1
 }
