@@ -2,7 +2,7 @@ import * as React from 'react';
 import Head from 'next/head'
 import getConfig from 'next/config';
 import { Container, Row, Modal } from 'react-bootstrap'
-import { checkForWinnerTicket } from 'src/helpers'
+import { checkForWinnerTicket, generateRandomIntegerList } from 'src/helpers'
 
 export async function getServerSideProps() {
   const { publicRuntimeConfig } = getConfig();
@@ -100,7 +100,9 @@ export default function Index(props) {
             }
           </Container>
           <Container className='description'>
-            Selecione 6 dezenas e verifique se a combinação já saiu <br />
+            Selecione 6 dezenas e verifique se a combinação já saiu
+          </Container>
+          <Container className='description'>
             em qualquer um dos concursos anteriores
           </Container>
           <Container className='info'>
@@ -109,7 +111,14 @@ export default function Index(props) {
           <Container>
             <Row>
               <button
-                className='clear'
+                className='white'
+                type="button"
+                onClick={() => setChecked(generateRandomIntegerList(6))}
+              >
+                Aleatório
+              </button>
+              <button
+                className='white'
                 type="button"
                 disabled={checked.length === 0}
                 onClick={() => setChecked([])}
@@ -137,7 +146,7 @@ export default function Index(props) {
         </Container>
       </main>
       <footer className="cntr-footer">
-        <a href="https://jeromevonk.github.io/" target="blank">By Jerome Vonk</a>
+        <a href="https://jeromevonk.github.io/" target="blank">Feito por Jerome Vonk</a>
       </footer>
     </Container>
   )
@@ -151,7 +160,6 @@ function ResultsModal(props) {
   return (
     <Modal
       {...otherProps}
-      size="lg"
       centered
     >
       <Modal.Header closeButton>
@@ -180,9 +188,6 @@ function ResultsModal(props) {
           }
         </div>
       </Modal.Body>
-      <Modal.Footer>
-        <button onClick={props.onHide}>Close</button>
-      </Modal.Footer>
     </Modal >
   );
 }

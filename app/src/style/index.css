@@ -25,7 +25,6 @@
 
 .title {
   height: 80px;
-  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,10 +42,10 @@
 .game {
   background-color: #f7f9d7;
   color: red;
+  margin-bottom: 5px;
 }
 
 .description {
-  margin-top: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -76,7 +75,7 @@
   font-style: italic;
 }
 
-.clear {
+.white {
   width: 100%;
   background-color: transparent;
   border: none;
@@ -87,7 +86,6 @@
   color: green;
   font-weight: bold;
 }
-
 
 .custom-button {
   background-color: transparent;
