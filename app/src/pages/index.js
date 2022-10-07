@@ -100,10 +100,10 @@ export default function Index(props) {
             }
           </Container>
           <Container className='description'>
-            Selecione 6 dezenas e verifique se a combinação foi
+            Selecione 6 dezenas e veja se a combinação foi
           </Container>
           <Container className='description'>
-            premiada em qualquer um dos concursos anteriores.
+            premiada em qualquer concurso anterior.
           </Container>
           <Container className='info'>
             {numContests} concursos | último em {props.lotteryData[0].date}
@@ -133,7 +133,6 @@ export default function Index(props) {
               >
                 {checked.length === 6 ? 'Verificar' : 'Escolha 6 dezenas'}
               </button>
-
             </Row>
             <ResultsModal
               show={modalShow}
@@ -168,7 +167,9 @@ function ResultsModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4 className='selected-numbers'>{checked.sort((a, b) => a - b).map(item => `${item} `)}</h4>
+        <h4>
+          {checked.sort((a, b) => a - b).map(item => <span class="dot">{item}</span>)}
+        </h4>
         <div>
           {
             results.length > 0 ?

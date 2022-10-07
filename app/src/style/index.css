@@ -7,7 +7,7 @@
 
 .md-container {
   max-width: 600px;
-  padding-top: 5rem;
+  padding-top: 3rem;
 }
 
 .cntr-footer {
@@ -82,11 +82,6 @@
   margin: 5px 5px;
 }
 
-.selected-numbers {
-  color: green;
-  font-weight: bold;
-}
-
 .custom-button {
   background-color: transparent;
   color: red;
@@ -113,6 +108,17 @@
 
 .unchecked-button {
   background-color: transparent;
+}
+
+.dot {
+  width: 35px;
+  line-height: 35px;
+  text-align: center;
+  background-color: var(--main-color);
+  color: white;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
 }
 
 a:link,

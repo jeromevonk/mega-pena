@@ -62,8 +62,10 @@ function checkForWinnerTicket(selectedNumbers, lotteryData) {
 
 const getPrizeText = (prize, hits, contest) => {
   // First line - which contest, date and how many hits
-  const firstLine = <span>No concurso <i>{contest.contestNumber}</i>,
-    em {contest.date}, você acertaria a <b>{prize}</b>{prize !== 'sena' && ` com ${hits}`}.</span>;
+  const firstLine = (
+    <span>No concurso <i>{contest.contestNumber}</i>,
+      em {contest.date}, você acertaria a <b>{prize}</b>{prize !== 'sena' && ` com ${hits.join(', ')}`}.
+    </span>);
 
 
   // Second line - winners and prize
