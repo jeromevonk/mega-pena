@@ -100,10 +100,10 @@ export default function Index(props) {
             }
           </Container>
           <Container className='description'>
-            Selecione 6 dezenas e veja se a combinação foi
+            Selecione 6 dezenas e veja se já foram
           </Container>
           <Container className='description'>
-            premiada em qualquer concurso anterior.
+            premiadas em qualquer concurso anterior.
           </Container>
           <Container className='info'>
             {numContests} concursos | último em {props.lotteryData[0].date}
