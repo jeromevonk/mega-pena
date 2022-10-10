@@ -2,14 +2,13 @@ import requests
 from gcloud import storage
 import json
 
-def run():
+def run(event, context):
     try:
-        print('Start')
         r = requests.get('https://loteriascaixa-api.herokuapp.com/api/mega-sena')
         original_data = r.json()
         lottery_data = []
 
-        print('Got data, parse')
+        print('Got {} contests to parse'.format(len(original_data)))
 
         for item in original_data:
             contest = {
@@ -34,16 +33,14 @@ def run():
             }
             lottery_data.append(contest)
         
-        print('Connect to client')
+        # Connect
         client = storage.Client(project='mega-pena')
-
-        print('Get bucket')
         bucket = client.get_bucket('lottery-data')
 
-        print('Create blob')
-        blob = bucket.blob('banana2')
         
+        # Upload
         print('Upload')
+        blob = bucket.blob('lottery-data.json')
         blob.upload_from_string(json.dumps(lottery_data, separators=(',', ':')), content_type='application/json')
     except Exception as e:
         print(e)
