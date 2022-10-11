@@ -2,7 +2,7 @@ import requests
 from gcloud import storage
 import json
 
-def run(event, context):
+def run(_event, _context):
     try:
         r = requests.get('https://loteriascaixa-api.herokuapp.com/api/mega-sena')
         original_data = r.json()

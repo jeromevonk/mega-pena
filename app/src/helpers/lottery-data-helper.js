@@ -86,4 +86,3 @@ const getPrizeText = (prize, hits, contest) => {
 
   return { contestNumber: contest.contestNumber, firstLine, secondLine };
 }
-// TODO: testes unitários nesse arquivo
