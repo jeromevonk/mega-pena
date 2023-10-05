@@ -1,46 +1,124 @@
-import requests
 from gcloud import storage
+from decimal import Decimal
 import json
+import requests
+requests.packages.urllib3.disable_warnings() # disable certificate warnings
+
+FILE_NAME='lottery-data.json'
+RUN_LOCAL=False
+
+def moneyfmt(value, places=2, curr='', sep=',', dp='.',
+             pos='', neg='-', trailneg=''):
+    """Convert Decimal to a money formatted string.
+
+    places:  required number of places after the decimal point
+    curr:    optional currency symbol before the sign (may be blank)
+    sep:     optional grouping separator (comma, period, space, or blank)
+    dp:      decimal point indicator (comma or period)
+             only specify as blank when places is zero
+    pos:     optional sign for positive numbers: '+', space or blank
+    neg:     optional sign for negative numbers: '-', '(', space or blank
+    trailneg:optional trailing minus indicator:  '-', ')', space or blank
+    """
+    q = Decimal(10) ** -places      # 2 places --> '0.01'
+    sign, digits, _ = value.quantize(q).as_tuple()
+    result = []
+    digits = list(map(str, digits))
+    build, next_digit = result.append, digits.pop
+    if sign:
+        build(trailneg)
+    for i in range(places):
+        build(next_digit() if digits else '0')
+    if places:
+        build(dp)
+    if not digits:
+        build('0')
+    i = 0
+    while digits:
+        build(next_digit())
+        i += 1
+        if i == 3 and digits:
+            i = 0
+            build(sep)
+    build(curr)
+    build(neg if sign else pos)
+    return ''.join(reversed(result))
+
+def get_locale_prize(prize):
+    if prize == 0:
+        return "-"
+    else:
+        return moneyfmt(Decimal(prize), places = 2, sep='.', dp=',')
+
+def parse_contest(data):
+    return {
+        "contestNumber": data['numero'],
+        "date": data["dataApuracao"],
+        "drawnNumbers": list(map(lambda num: int(num), data["listaDezenas"])),
+        "prizeForNextContest": get_locale_prize(data["valorAcumuladoProximoConcurso"]),
+        "awards": {
+            "sena": {
+                "winners": data["listaRateioPremio"][0]["numeroDeGanhadores"],
+                "prize": get_locale_prize(data["listaRateioPremio"][0]["valorPremio"])
+            },
+            "quina": {
+                "winners": data["listaRateioPremio"][1]["numeroDeGanhadores"],
+                "prize": get_locale_prize(data["listaRateioPremio"][1]["valorPremio"])
+            },
+            "quadra": {
+                "winners": data["listaRateioPremio"][2]["numeroDeGanhadores"],
+                "prize": get_locale_prize(data["listaRateioPremio"][2]["valorPremio"])
+            }
+        }
+    }
 
 def run(_event, _context):
     try:
-        r = requests.get('https://loteriascaixa-api.herokuapp.com/api/mega-sena')
-        original_data = r.json()
-        lottery_data = []
-
-        print('Got {} contests to parse'.format(len(original_data)))
-
-        for item in original_data:
-            contest = {
-                "contestNumber": item['concurso'],
-                "date": item["data"],
-                "drawnNumbers": list(map(lambda num: int(num), item["dezenas"])),
-                "prizeForNextContest": item["acumuladaProxConcurso"],
-                "awards": {
-                    "sena": {
-                        "winners": item["premiacoes"][0]["vencedores"],
-                        "prize": item["premiacoes"][0]["premio"],
-                    },
-                    "quina": {
-                        "winners": item["premiacoes"][1]["vencedores"],
-                        "prize": item["premiacoes"][1]["premio"],
-                    },
-                    "quadra": {
-                        "winners": item["premiacoes"][2]["vencedores"],
-                        "prize": item["premiacoes"][2]["premio"],
-                    }
-                },
-            }
-            lottery_data.append(contest)
-        
         # Connect
         client = storage.Client(project='mega-pena')
         bucket = client.get_bucket('lottery-data')
 
+        # Get current data
+        blob = bucket.get_blob(FILE_NAME)
+        data = blob.download_as_string()
+        lottery_data = json.loads(data)
+
+        # How many results?
+        print('There are {} contests, last is {} in {}'.format(len(lottery_data), lottery_data[0]['contestNumber'], lottery_data[0]['date']))
+
+        # Check if there is new data
+        last = lottery_data[0]['contestNumber']
+        look_for = last + 1
         
-        # Upload
-        print('Upload')
-        blob = bucket.blob('lottery-data.json')
-        blob.upload_from_string(json.dumps(lottery_data, separators=(',', ':')), content_type='application/json')
+        keep_looking = True
+        found_something = False
+
+        while keep_looking:
+            print(f'Trying to get contest numer {look_for}')
+            r = requests.get(f'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{look_for}', verify=False)
+            data = r.json()
+
+            if 'numero' in data:
+                print(f'Got contest number {look_for}')
+                new_item = parse_contest(data)
+
+                # Insert in list
+                found_something = True
+                lottery_data.insert(0, new_item)
+
+                # Increment
+                look_for += 1
+
+            else:
+                print(f'No contest number {look_for} found. End.')
+                keep_looking = False
+
+        # If new contests were found, update the file
+        if found_something:
+            blob = bucket.blob(FILE_NAME)
+            blob.upload_from_string(json.dumps(lottery_data, separators=(',', ':')), content_type='application/json')
     except Exception as e:
         print(e)
+
+if RUN_LOCAL:
+    run(None, None)
