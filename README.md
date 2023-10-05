@@ -1,4 +1,4 @@
-**# mega-pena
+# mega-pena
 
 [https://mega-pena.vercel.app/](https://mega-pena.vercel.app/)
 
@@ -14,4 +14,4 @@ npm run dev
 
 ### Fonte de dados
 
-[https://github.com/guto-alves/loterias-api](https://github.com/guto-alves/loterias-api)
+[https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/](https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/)
