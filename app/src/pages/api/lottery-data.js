@@ -12,7 +12,6 @@ export default async function handler(req, res) {
     // Read the json data file data.json
     const fileContents = await fs.readFile(jsonDirectory + '/resultados.json', 'utf8');
     lotteryData = JSON.parse(fileContents);
-    
   } else {
     // Get data from the server
     const res = await fetch('https://storage.googleapis.com/lottery-data/lottery-data.json');
