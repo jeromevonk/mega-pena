@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Head from 'next/head'
 import getConfig from 'next/config';
 import { Container, Row, Modal } from 'react-bootstrap'
@@ -32,15 +33,13 @@ export default function Index(props) {
 
         return [...prev];
       })
-    } else {
-      if (checked.length > 5) {
+    } else if (checked.length > 5) {
         // It's full. Return?
-      } else {
-        setChecked(prev => {
-          prev.push(index)
-          return [...prev];
-        })
-      }
+    } else {
+      setChecked(prev => {
+        prev.push(index)
+        return [...prev];
+      })
     }
   }
 
@@ -151,6 +150,11 @@ export default function Index(props) {
   )
 }
 
+
+Index.propTypes = {
+  lotteryData: PropTypes.array.isRequired,
+};
+
 function ResultsModal(props) {
   const { checked, lotteryData, ...otherProps } = props;
 
@@ -168,7 +172,7 @@ function ResultsModal(props) {
       </Modal.Header>
       <Modal.Body>
         <h4>
-          {checked.sort((a, b) => a - b).map(item => <span class="dot">{item}</span>)}
+          {checked.sort((a, b) => a - b).map(item => <span className="dot" key={item}>{item}</span>)}
         </h4>
         <div>
           {
@@ -192,3 +196,9 @@ function ResultsModal(props) {
     </Modal >
   );
 }
+
+
+ResultsModal.propTypes = {
+  lotteryData: PropTypes.array.isRequired,
+  checked: PropTypes.array.isRequired,
+};
