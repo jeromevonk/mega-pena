@@ -2,10 +2,10 @@ from gcloud import storage
 from decimal import Decimal
 import json
 import requests
-requests.packages.urllib3.disable_warnings() # disable certificate warnings
+requests.packages.urllib3.disable_warnings()  # disable certificate warnings
 
-FILE_NAME='lottery-data.json'
-RUN_LOCAL=False
+FILE_NAME = 'lottery-data.json'
+
 
 def moneyfmt(value, places=2, curr='', sep=',', dp='.',
              pos='', neg='-', trailneg=''):
@@ -44,11 +44,13 @@ def moneyfmt(value, places=2, curr='', sep=',', dp='.',
     build(neg if sign else pos)
     return ''.join(reversed(result))
 
+
 def get_locale_prize(prize):
     if prize == 0:
         return "-"
     else:
-        return moneyfmt(Decimal(prize), places = 2, sep='.', dp=',')
+        return moneyfmt(Decimal(prize), places=2, sep='.', dp=',')
+
 
 def parse_contest(data):
     return {
@@ -72,6 +74,7 @@ def parse_contest(data):
         }
     }
 
+
 def run(_event, _context):
     try:
         # Connect
@@ -84,12 +87,13 @@ def run(_event, _context):
         lottery_data = json.loads(data)
 
         # How many results?
-        print('There are {} contests, last is {} in {}'.format(len(lottery_data), lottery_data[0]['contestNumber'], lottery_data[0]['date']))
+        print(
+            f"There are {len(lottery_data)} contests, last is {lottery_data[0]['contestNumber']} in {lottery_data[0]['date']}")
 
         # Check if there is new data
         last = lottery_data[0]['contestNumber']
         look_for = last + 1
-        
+
         keep_looking = True
         found_something = False
 
@@ -119,6 +123,3 @@ def run(_event, _context):
             blob.upload_from_string(json.dumps(lottery_data, separators=(',', ':')), content_type='application/json')
     except Exception as e:
         print(e)
-
-if RUN_LOCAL:
-    run(None, None)
