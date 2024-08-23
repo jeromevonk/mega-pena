@@ -1,9 +1,10 @@
 import json
 
 import requests
-requests.packages.urllib3.disable_warnings() # disable certificate warnings
+# requests.packages.urllib3.disable_warnings() # disable certificate warnings
 
 from decimal import Decimal
+
 
 def moneyfmt(value, places=2, curr='', sep=',', dp='.',
              pos='', neg='-', trailneg=''):
@@ -42,11 +43,13 @@ def moneyfmt(value, places=2, curr='', sep=',', dp='.',
     build(neg if sign else pos)
     return ''.join(reversed(result))
 
+
 def get_locale_prize(prize):
     if prize == 0:
         return "-"
     else:
-        return moneyfmt(Decimal(prize), places = 2, sep='.', dp=',')
+        return moneyfmt(Decimal(prize), places=2, sep='.', dp=',')
+
 
 def parse_contest(data):
     return {
@@ -70,6 +73,7 @@ def parse_contest(data):
         }
     }
 
+
 def run(_event, _context):
 
     try:
@@ -77,20 +81,21 @@ def run(_event, _context):
 
         with open('app/src/data/resultados.json') as reader:
             lottery_data = json.loads(reader.read())
-             
+
         # How many results?
-        print('There are {} contests, last is {} in {}'.format(len(lottery_data), lottery_data[0]['contestNumber'], lottery_data[0]['date']))
+        print('There are {} contests, last is {} in {}'.format(
+            len(lottery_data), lottery_data[0]['contestNumber'], lottery_data[0]['date']))
 
         # Check if there is new data
         last = lottery_data[0]['contestNumber']
         look_for = last + 1
-        
+
         keep_looking = True
         found_something = False
 
         while keep_looking:
             print(f'Trying to get contest numer {look_for}')
-            r = requests.get(f'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{look_for}', verify=False)
+            r = requests.get(f'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{look_for}')
             data = r.json()
 
             if 'numero' in data:
@@ -114,5 +119,6 @@ def run(_event, _context):
                 writer.write(json.dumps(lottery_data))
     except Exception as e:
         print(e)
+
 
 run(None, None)

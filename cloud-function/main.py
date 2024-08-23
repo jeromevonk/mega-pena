@@ -2,7 +2,6 @@ from gcloud import storage
 from decimal import Decimal
 import json
 import requests
-requests.packages.urllib3.disable_warnings()  # disable certificate warnings
 
 FILE_NAME = 'lottery-data.json'
 
@@ -99,7 +98,7 @@ def run(_event, _context):
 
         while keep_looking:
             print(f'Trying to get contest numer {look_for}')
-            r = requests.get(f'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{look_for}', verify=False)
+            r = requests.get(f'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{look_for}')
             data = r.json()
 
             if 'numero' in data:
