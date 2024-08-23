@@ -1,4 +1,5 @@
 from decimal import Decimal
+import requests
 
 
 def moneyfmt(value, places=2, curr='', sep=',', dp='.',
@@ -67,3 +68,38 @@ def parse_contest(data):
             }
         }
     }
+
+
+def get_new_data(lottery_data):
+    # How many results?
+    print(
+        f"There are {len(lottery_data)} contests, last is {lottery_data[0]['contestNumber']} in {lottery_data[0]['date']}")
+
+    # Check if there is new data
+    last = lottery_data[0]['contestNumber']
+    look_for = last + 1
+
+    keep_looking = True
+    found_something = False
+
+    while keep_looking:
+        print(f'Trying to get contest numer {look_for}')
+        r = requests.get(f'https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{look_for}')
+        data = r.json()
+
+        if 'numero' in data:
+            print(f'Got contest number {look_for}')
+            new_item = parse_contest(data)
+
+            # Insert in list
+            found_something = True
+            lottery_data.insert(0, new_item)
+
+            # Increment
+            look_for += 1
+
+        else:
+            print(f'No contest number {look_for} found. End.')
+            keep_looking = False
+
+    return found_something
