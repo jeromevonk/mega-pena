@@ -85,16 +85,21 @@
 .custom-button {
   background-color: transparent;
   color: red;
-  text-align: center;
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   width: 10%;
+  box-sizing: border-box;
   border-left: 2px solid red;
   border-top: none;
   border-bottom: none;
   border-right: none;
   margin: 5px 0px;
+  padding: 0;
+  white-space: nowrap;
+  line-height: normal;
 }
 
 .custom-button:last-of-type {
