@@ -1,14 +1,18 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import Head from 'next/head'
-import getConfig from 'next/config';
 import { Container, Row, Modal } from 'react-bootstrap'
 import { checkForWinnerTicket, generateRandomIntegerList } from 'src/helpers'
+import { getLotteryData } from 'src/server/lottery-data';
 
 export async function getServerSideProps() {
-  const { publicRuntimeConfig } = getConfig();
-  const res = await fetch(`${publicRuntimeConfig.apiUrl}/lottery-data`);
-  const lotteryData = await res.json();
+  const startedAt = Date.now();
+  console.info('[page:/] Server-side render data request started');
+  const lotteryData = await getLotteryData();
+  console.info('[page:/] Server-side render data request completed', {
+    contests: lotteryData.length,
+    durationMs: Date.now() - startedAt,
+  });
 
   return {
     props: {
